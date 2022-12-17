@@ -28,6 +28,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Minify Css Js and Html files in GitHub Action
+      uses: amireshoon/minifyAction@v1.1
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
