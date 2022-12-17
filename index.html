@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="de">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Stadt-Land-Fluss</title>
+      <style>
+         @import url('https://fonts.googleapis.com/css?family=Muli:300&display=swap');
+         .button-5 {
+         align-items: center;
+         background-clip: padding-box;
+         background-color: #fa6400;
+         border: 1px solid transparent;
+         border-radius: .25rem;
+         box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+         box-sizing: border-box;
+         color: #fff;
+         cursor: pointer;
+         display: inline-flex;
+         font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+         font-size: 16px;
+         font-weight: 600;
+         justify-content: center;
+         line-height: 1.25;
+         margin: 0;
+         min-height: 3rem;
+         padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+         position: relative;
+         text-decoration: none;
+         transition: all 250ms;
+         user-select: none;
+         -webkit-user-select: none;
+         touch-action: manipulation;
+         vertical-align: baseline;
+         width: auto;
+         }
+         input {
+         align-items: center;
+         background-color: #fa6400;
+         border: 1px solid transparent;
+         border-radius: .25rem;
+         box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+         color: #fff;
+         display: inline-flex;
+         font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+         font-size: 16px;
+         font-weight: 600;
+         line-height: 1.25;
+         min-height: 3rem;
+         padding: 1em;
+         padding-left: 10px;
+         margin: 10px;
+         position: relative;
+         text-decoration: none;
+         transition: all 250ms;
+         width: auto;
+         border: none;
+         display: block;
+         font-family: inherit;
+         font-size: 16px;
+         color: black;
+         width: 100%;
+         }
+         .button-5:hover,
+         .button-5:focus {
+         background-color: #fb8332;
+         box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+         }
+         .button-5:hover, input:hover {
+         transform: translateY(-1px);
+         }
+         .button-5:active, input:active {
+         background-color: #c85000;
+         box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
+         transform: translateY(0);
+         }
+         * {
+         box-sizing: border-box;
+         }
+         body {
+         background-color: #2b88f0;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         min-height: 100vh;
+         font-family: 'Muli', sans-serif;
+         margin: 0;
+         padding: 10px;
+         text-align: center;
+         overflow: hidden;
+         }
+         h3 {
+         color: #fff;
+         margin: 10px 0 20px;
+         }
+         h1 {
+         font-size: xx-large;
+         font-weight: bold;
+         color: #fff;
+         }
+         .container {
+         width: 500px;
+         max-width: 100%;
+         }
+         .tag {
+         border-radius: 50px;
+         color: #fff;
+         display: inline-block;
+         font-size: 14px;
+         padding: 10px 20px;
+         margin: 0 5px 10px 0;
+         }
+         .tag:hover {
+         transform: translateY(-1px);
+         }
+         .charTag {
+         background-color: #a75c08;
+         }
+         .categoryTag {
+         background-color: #f0932b;
+         }
+         .tag.highlight {
+         background-color: #273c75;
+         }
+         .result-char, .result-category {
+         display: none; 
+         position: absolute;
+         width: 100%;
+         height: 50%;
+         left: 0;
+         }
+         .result-char {
+         background-color: rgb(230, 41, 41);
+         bottom: 0;
+         animation: res1 1.5s linear;
+         }
+         .result-category {
+         background-color: rgb(63, 41, 230);
+         top: 0;
+         animation: res2 1.5s linear;
+         }
+         @keyframes res1 {
+         0%   { 
+         transform: translateX(200%); 		
+         }
+         100% { 
+         transform: translateX(0%); 
+         }
+         }
+         @keyframes res2 {
+         0%   { 
+         transform: translateX(-200%); 		
+         }
+         100% { 
+         transform: translateX(0%); 
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <h3>Buchstaben, die benutzt werden sollen</h3>
+         <input
+            type="text"
+            placeholder="Buchstaben"
+            value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            id="charInput"
+            />
+         <h3>Felder von Stadt, Land, Fluss (Kommagetrennt)</h3>
+         <input id="textarea" placeholder="Stadt, Land, Fluss" value="Stadt, Land, Fluss, Tier"></input>
+         <div id="tags"></div>
+         <div id="charTags"></div>
+         <button onclick="choose()" class="button-5">Start</button>
+         <div class="result-char" id=".charTag-res">
+            <h1>Buchstabe:</h1>
+            <b>
+               <h1 id=".charTag-res-text"></h1>
+            </b>
+         </div>
+         <div class="result-category" id=".categoryTag-res">
+            <h1>Kategorie:</h1>
+            <b>
+               <h1 id=".categoryTag-res-text"></h1>
+            </b>
+         </div>
+      </div>
+      <script defer>
+         const tagsEl = document.getElementById('tags');
+         const charTagsEl = document.getElementById('charTags');
+         const textarea = document.getElementById('textarea');
+         const chars = document.getElementById('charInput');
+         createTags(textarea.value);
+         createCharTags(chars.value);
+         
+         const choose = () => {
+           randomSelect('.charTag');
+           randomSelect('.categoryTag');
+         }
+         
+         textarea.addEventListener('keyup', (e) => {
+           createTags(e.target.value);
+         });
+         
+         chars.addEventListener('keyup', (e) => {
+           createCharTags(e.target.value);
+         });
+         
+         
+         function createTags(input) {
+           const tags = input
+             .split(',')
+             .filter((tag) => tag.trim() !== '')
+             .map((tag) => tag.trim());
+         
+           // clean up the tags first
+           tagsEl.innerHTML = '';
+         
+           // map over the tags and add them to the tagsEl container
+           tags.forEach((tag) => {
+             const tagEl = document.createElement('span');
+             tagEl.classList.add('tag');
+             tagEl.classList.add('categoryTag');
+             tagEl.innerText = tag;
+             tagsEl.appendChild(tagEl);
+           });
+         }
+         
+         function createCharTags(input) {
+           const tags = input
+             .split('')
+             .filter((tag) => tag.trim() !== '')
+             .map((tag) => tag.trim());
+           // clean up the tags first
+           charTagsEl.innerHTML = '';
+         
+           // map over the tags and add them to the tagsEl container
+           tags.forEach((tag) => {
+             const tagEl = document.createElement('span');
+             tagEl.classList.add('tag');
+             tagEl.classList.add("charTag")
+             tagEl.innerText = tag;
+             charTagsEl.appendChild(tagEl);
+           });
+         }
+         
+         function randomSelect(cl) {
+           const times = 30;
+         
+           const interval = setInterval(() => {
+             const randomTag = pickRandomTag(cl);
+         
+             highlightTag(randomTag);
+         
+             // remove the highlight after a while
+             setTimeout(() => {
+               unhighlightTag(randomTag);
+             }, 100);
+           }, 50);
+         
+           // allow times * 100 ms for the tags to randomly "highlight" themselves
+           // then pick another tag
+           setTimeout(() => {
+             clearInterval(interval);
+         
+             setTimeout(() => {
+               const randomTag = pickRandomTag(cl);
+         
+               highlightTag(randomTag);
+             }, 100);
+           
+           setTimeout(() => {
+               document.getElementById(cl + "-res").style.display = "block"
+               document.getElementById(cl + "-res-text").innerText = document.getElementsByClassName((cl + " .highlight").replaceAll(".", ""))[0].innerText
+               document.getElementById(cl + "-res").onclick = (e) => {
+                remove()
+               }
+           }, 1000)
+           
+         
+           }, times * 100)
+         }
+         
+         function pickRandomTag(cl) {
+           const tags = document.querySelectorAll(cl);
+           return tags[Math.floor(Math.random() * tags.length)];
+         }
+         
+         function highlightTag(tag) {
+           tag.classList.add('highlight');
+         }
+         
+         function unhighlightTag(tag) {
+           tag.classList.remove('highlight');
+         }
+
+         function remove() {
+            document.getElementById(".charTag-res").style.display = "none"
+            document.getElementById(".categoryTag-res").style.display = "none"
+         }
+      </script>
+   </body>
+</html>
