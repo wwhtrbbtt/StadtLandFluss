@@ -153,6 +153,11 @@
          transform: translateX(0%); 
          }
          }
+
+         .big {
+          padding-top: 5rem;
+          font-size: 5.5rem;
+         }
       </style>
    </head>
    <body>
@@ -171,16 +176,10 @@
          <div id="charTags"></div>
          <button onclick="choose()" class="button-5">Start</button>
          <div class="result-char" id=".charTag-res">
-            <h1>Buchstabe:</h1>
-            <b>
-               <h1 id=".charTag-res-text"></h1>
-            </b>
+              <h1 id=".charTag-res-text" class="big"></h1>
          </div>
          <div class="result-category" id=".categoryTag-res">
-            <h1>Kategorie:</h1>
-            <b>
-               <h1 id=".categoryTag-res-text"></h1>
-            </b>
+               <h1 id=".categoryTag-res-text" class="big"></h1>
          </div>
       </div>
       <script defer>
